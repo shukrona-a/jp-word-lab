@@ -65,7 +65,7 @@
     <h2>漢字 Изучение кандзи</h2>
     <p>Напиши слово, например "огонь", и мы покажем кандзи, чтение и ассоциации.</p>
     <input type="text" id="kanji-search" placeholder="Введите ключевое слово..." />
-    <button onclick="searchKanji()">Найти</button>
+    <button type="button" onclick="searchKanji()">Найти</button>
     <div id="kanji-results"></div>
   </section>
 
@@ -82,7 +82,7 @@
     }
 
     function searchKanji() {
-      const input = document.getElementById("kanji-search").value.toLowerCase();
+      const input = document.getElementById("kanji-search").value.toLowerCase().trim();
       const results = document.getElementById("kanji-results");
       results.innerHTML = "";
 
@@ -133,10 +133,13 @@
       const jp = document.getElementById('jp-word').value.trim();
       const en = document.getElementById('en-word').value.trim();
       const ru = document.getElementById('ru-word').value.trim();
-      words.push({ jp, en, ru });
-      localStorage.setItem('jpWords', JSON.stringify(words));
-      form.reset();
-      renderWords();
+
+      if (jp && en && ru) {
+        words.push({ jp, en, ru });
+        localStorage.setItem('jpWords', JSON.stringify(words));
+        form.reset();
+        renderWords();
+      }
     });
 
     renderWords();
