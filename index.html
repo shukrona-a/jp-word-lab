@@ -6,211 +6,207 @@
   <title>JP Word Lab</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #fffafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff8f0;
       color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2em;
-      margin: 0;
-    }
-    h1, h2 {
-      color: #d72638;
       text-align: center;
+      margin: 0;
+      padding: 2em;
     }
-    .container {
-      max-width: 700px;
-      width: 100%;
+    h1 {
+      color: #d72638;
+      margin-bottom: 1em;
+    }
+    nav {
+      margin-bottom: 2em;
+    }
+    nav button {
+      margin: 0 0.5em;
+      padding: 0.5em 1em;
+      background: #f9d5d3;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    nav button:hover {
+      background: #f8bcbc;
+    }
+    form {
+      margin-bottom: 2em;
     }
     input, button {
       padding: 0.5em;
       font-size: 1em;
-      margin: 0.3em 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    nav {
-      margin-bottom: 1em;
-      display: flex;
-      justify-content: center;
-      gap: 0.5em;
-      flex-wrap: wrap;
-    }
-    nav button {
-      background: #fddde6;
-      border: 1px solid #d72638;
+      margin: 0.2em;
       border-radius: 6px;
-      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+    section {
+      margin-top: 2em;
     }
     .word {
-      background: #f9f9f9;
-      padding: 0.5em;
-      margin: 0.5em 0;
-      border-left: 4px solid #d72638;
+      margin-bottom: 1em;
     }
-    .flashcard, .quiz-question {
-      background: #fff5f7;
+    .flashcard {
+      margin: auto;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       padding: 1em;
-      margin-top: 1em;
-      border-radius: 8px;
-      text-align: center;
+      margin-bottom: 1em;
+      background: #fff;
     }
-    .flashcard button, .quiz-question button {
-      margin-top: 0.5em;
+    .flashcard button {
+      display: block;
+      margin: 1em auto 0 auto;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>JP Word Lab</h1>
-    <nav>
-      <button onclick="showSection('dictionary')">📖 Словарь</button>
-      <button onclick="showSection('flashcards')">📚 Карточки</button>
-      <button onclick="showSection('quiz')">🧠 Мини-игра</button>
-      <button onclick="showSection('kanji')">漢字 Кандзи</button>
-    </nav>
+  <h1>JP Word Lab</h1>
 
-    <!-- 📖 Словарь -->
-    <section id="dictionary">
-      <h2>💬 Поиск слов через Jisho (англ., рус., яп.)</h2>
-      <input type="text" id="search-input" placeholder="Введите слово...">
-      <button onclick="searchWord()">Поиск</button>
-      <div id="search-results"></div>
+  <nav>
+    <button onclick="showSection('search')">💬 Поиск слов</button>
+    <button onclick="showSection('flashcards')">📚 Карточки</button>
+    <button onclick="showSection('game')">🧠 Мини-игра</button>
+    <button onclick="showSection('kanji')">漢字 Кандзи</button>
+  </nav>
 
-      <h2>💾 Моя тетрадь слов</h2>
-      <div id="word-list"></div>
-    </section>
+  <section id="search">
+    <h2>💬 Поиск слов через Jisho (англ., рус., яп.)</h2>
+    <input type="text" id="search-input" placeholder="Введите слово..." />
+    <button onclick="searchWord()">Поиск</button>
+    <div id="search-results"></div>
+  </section>
 
-    <!-- 📚 Карточки -->
-    <section id="flashcards" style="display:none;">
-      <h2>📚 Карточки для повторения</h2>
-      <div id="flashcard-container"></div>
-    </section>
+  <section id="flashcards" style="display:none;">
+    <h2>📚 Карточки для повторения</h2>
+    <div id="flashcards-container"></div>
+  </section>
 
-    <!-- 🧠 Мини-игра -->
-    <section id="quiz" style="display:none;">
-      <h2>🧠 Угадай перевод</h2>
-      <div id="quiz-container"></div>
-    </section>
+  <section id="game" style="display:none;">
+    <h2>🧠 Мини-игра</h2>
+    <div id="game-container">Игра появится здесь.</div>
+  </section>
 
-    <!-- 漢字 Кандзи -->
-    <section id="kanji" style="display:none;">
-      <h2>漢字 Ассоциации и обучение</h2>
-      <input type="text" id="kanji-input" placeholder="Введите ключевое слово...">
-      <button onclick="searchKanji()">Найти</button>
-      <div id="kanji-results"></div>
-    </section>
-  </div>
+  <section id="kanji" style="display:none;">
+    <h2>漢字 Кандзи с ассоциациями</h2>
+    <p>Введите ключевое слово для кандзи:</p>
+    <input type="text" id="kanji-search" placeholder="Например: огонь, вода..." />
+    <button onclick="searchKanji()">Поиск</button>
+    <div id="kanji-results"></div>
+  </section>
+
+  <h2>💾 Моя тетрадь слов</h2>
+  <div id="word-list"></div>
 
   <script>
     let words = JSON.parse(localStorage.getItem('jpWords')) || [];
 
     function showSection(id) {
-      ['dictionary', 'flashcards', 'quiz', 'kanji'].forEach(section => {
-        document.getElementById(section).style.display = (section === id) ? 'block' : 'none';
+      ['search', 'flashcards', 'game', 'kanji'].forEach(section => {
+        document.getElementById(section).style.display = section === id ? 'block' : 'none';
       });
     }
 
-    function saveWords() {
-      localStorage.setItem('jpWords', JSON.stringify(words));
-    }
-
-    function renderWordList() {
-      const list = document.getElementById('word-list');
-      list.innerHTML = '';
-      words.forEach((word, i) => {
-        const div = document.createElement('div');
-        div.className = 'word';
-        div.innerHTML = `${i + 1}. <strong>${word.jp}</strong> (${word.reading}) — ${word.en} <button onclick="deleteWord(${i})">Удалить</button>`;
-        list.appendChild(div);
-      });
-    }
-
-    function deleteWord(i) {
-      words.splice(i, 1);
-      saveWords();
-      renderWordList();
-    }
-
-    async function searchWord() {
+    function searchWord() {
       const query = document.getElementById('search-input').value;
-      const res = await fetch(`https://cors-anywhere.herokuapp.com/https://jisho.org/api/v1/search/words?keyword=${query}`);
-      const data = await res.json();
-      const result = data.data[0];
-      const container = document.getElementById('search-results');
-      if (result) {
-        const jp = result.japanese[0].word || result.japanese[0].reading;
-        const reading = result.japanese[0].reading;
-        const en = result.senses[0].english_definitions.join(', ');
-        container.innerHTML = `<div class='word'><strong>${jp}</strong> (${reading}) — ${en} <button onclick='addWord(` + JSON.stringify({ jp, reading, en }) + `)'>Добавить</button></div>`;
-      } else {
-        container.innerHTML = '<p>Слово не найдено.</p>';
-      }
+      const resultsDiv = document.getElementById('search-results');
+      resultsDiv.innerHTML = 'Загрузка...';
+      fetch(`https://corsproxy.io/?https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.data || data.data.length === 0) {
+            resultsDiv.innerHTML = 'Ничего не найдено';
+            return;
+          }
+          const word = data.data[0];
+          const jp = word.japanese[0].word || word.japanese[0].reading;
+          const en = word.senses[0].english_definitions.join(', ');
+          resultsDiv.innerHTML = `
+            <p><strong>${jp}</strong> — ${en}</p>
+            <button onclick="addWord('${jp}', '${en}', '')">Добавить в словарь</button>
+          `;
+        })
+        .catch(() => resultsDiv.innerHTML = 'Ошибка при поиске.');
     }
 
-    function addWord(word) {
-      words.push(word);
-      saveWords();
-      renderWordList();
+    function addWord(jp, en, ru) {
+      words.push({ jp, en, ru });
+      localStorage.setItem('jpWords', JSON.stringify(words));
+      renderWords();
+    }
+
+    function renderWords() {
+      const wordList = document.getElementById('word-list');
+      wordList.innerHTML = '';
+      words.forEach((word, index) => {
+        wordList.innerHTML += `
+          <div class="word">
+            ${index + 1}. <strong>${word.jp}</strong> — ${word.en} ${word.ru ? `— ${word.ru}` : ''}
+            <button onclick="deleteWord(${index})">Удалить</button>
+          </div>
+        `;
+      });
+      renderFlashcards();
+    }
+
+    function deleteWord(index) {
+      words.splice(index, 1);
+      localStorage.setItem('jpWords', JSON.stringify(words));
+      renderWords();
     }
 
     function renderFlashcards() {
-      const container = document.getElementById('flashcard-container');
+      const container = document.getElementById('flashcards-container');
       container.innerHTML = '';
       let i = 0;
-      if (!words.length) return container.innerHTML = 'Нет слов';
-
+      if (words.length === 0) return;
       const showCard = () => {
-        const card = words[i];
-        container.innerHTML = `
-          <div class='flashcard'>
-            <h3>${card.jp}</h3>
-            <p>${card.reading}</p>
-            <button onclick='document.getElementById("flashcard-container").innerHTML += "<p><strong>${card.en}</strong></p>"'>Показать перевод</button>
-            <button onclick='i = (i + 1) % words.length; showCard()'>Следующее</button>
-          </div>`;
-      }
+        if (i >= words.length) i = 0;
+        const card = document.createElement('div');
+        card.className = 'flashcard';
+        card.innerHTML = `
+          <p><strong>${words[i].jp}</strong></p>
+          <p>${words[i].en}</p>
+          <button onclick="nextCard()">Следующее</button>
+        `;
+        container.innerHTML = '';
+        container.appendChild(card);
+      };
+      window.nextCard = () => {
+        i++;
+        showCard();
+      };
       showCard();
     }
 
-    function renderQuiz() {
-      const container = document.getElementById('quiz-container');
-      if (words.length < 4) return container.innerHTML = 'Нужно хотя бы 4 слова';
-
-      const correct = words[Math.floor(Math.random() * words.length)];
-      const options = [correct];
-      while (options.length < 4) {
-        const rand = words[Math.floor(Math.random() * words.length)];
-        if (!options.includes(rand)) options.push(rand);
-      }
-      options.sort(() => Math.random() - 0.5);
-
-      container.innerHTML = `
-        <div class='quiz-question'>
-          <h3>${correct.jp}</h3>
-          ${options.map(opt => `<button onclick='alert("${opt === correct ? "Верно!" : "Неверно."}"); renderQuiz()'>${opt.en}</button>`).join('<br>')}
-        </div>`;
-    }
-
     function searchKanji() {
-      const value = document.getElementById('kanji-input').value.toLowerCase();
-      const results = document.getElementById('kanji-results');
-      const data = {
-        "вода": { kanji: "水", readings: "スイ / みず", hint: "волны воды 🌊" },
-        "огонь": { kanji: "火", readings: "カ / ひ", hint: "вспышка огня 🔥" },
-        "дерево": { kanji: "木", readings: "モク / き", hint: "похоже на дерево 🌳" },
-        "лес": { kanji: "森", readings: "シン / もり", hint: "три дерева — это лес 🌲🌲🌲" }
+      const input = document.getElementById("kanji-search").value.toLowerCase();
+      const results = document.getElementById("kanji-results");
+      results.innerHTML = "";
+
+      const kanjiData = {
+        дерево: { kanji: "木", meaning: "дерево", readings: "モク (moku), き (ki)", hint: "Похоже на дерево 🌳" },
+        лес: { kanji: "森", meaning: "лес", readings: "シン (shin), もり (mori)", hint: "Три дерева — это лес" },
+        вода: { kanji: "水", meaning: "вода", readings: "スイ (sui), みず (mizu)", hint: "Волны воды" },
+        огонь: { kanji: "火", meaning: "огонь", readings: "カ (ka), ひ (hi)", hint: "Вспышка огня" }
       };
-      if (data[value]) {
-        const k = data[value];
-        results.innerHTML = `<div class='word'><strong>${k.kanji}</strong><br>Чтения: ${k.readings}<br>Ассоциация: ${k.hint}</div>`;
+
+      if (kanjiData[input]) {
+        const data = kanjiData[input];
+        results.innerHTML = `
+          <p><strong>${data.kanji}</strong> — ${data.meaning}</p>
+          <p><strong>Чтения:</strong> ${data.readings}</p>
+          <p><strong>Ассоциация:</strong> ${data.hint}</p>
+        `;
       } else {
-        results.innerHTML = '<p>Кандзи не найден.</p>';
+        results.innerHTML = "<p>Кандзи не найден. Попробуйте другое слово.</p>";
       }
     }
 
-    renderWordList();
+    renderWords();
   </script>
 </body>
 </html>
