@@ -5,44 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JP Word Lab</title>
   <style>
-    body {<nav style="margin-bottom: 1em;">
-  <button onclick="showSection('tests')">🧠 Тесты</button>
-  <button onclick="showSection('flashcards')">📚 Карточки</button>
-  <button onclick="showSection('kanji')">漢字 Канзи</button>
-</nav>
-<script>
-  function showSection(sectionId) {
-    // Скрыть все разделы
-    ['tests', 'flashcards', 'kanji'].forEach(id => {
-      document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
-    });
-  }
-
-  function searchKanji() {
-    const input = document.getElementById("kanji-search").value.toLowerCase();
-    const results = document.getElementById("kanji-results");
-    results.innerHTML = "";
-
-    const kanjiData = {
-      дерево: { kanji: "木", meaning: "дерево", readings: "モク (moku), き (ki)", hint: "похоже на дерево 🌳" },
-      лес: { kanji: "森", meaning: "лес", readings: "シン (shin), もり (mori)", hint: "три дерева — это лес" },
-      вода: { kanji: "水", meaning: "вода", readings: "スイ (sui), みず (mizu)", hint: "волны воды" },
-      огонь: { kanji: "火", meaning: "огонь", readings: "カ (ka), ひ (hi)", hint: "вспышка огня" }
-    };
-
-    if (kanjiData[input]) {
-      const data = kanjiData[input];
-      results.innerHTML = `
-        <p><strong>${data.kanji}</strong> — ${data.meaning}</p>
-        <p><strong>Чтения:</strong> ${data.readings}</p>
-        <p><strong>Ассоциация:</strong> ${data.hint}</p>
-      `;
-    } else {
-      results.innerHTML = "<p>Кандзи не найден. Попробуйте другое слово.</p>";
-    }
-  }
-</script>
-
+    body {
       font-family: sans-serif;
       background: #fefefe;
       margin: 2em;
@@ -59,41 +22,89 @@
       font-size: 1em;
       margin: 0.2em 0;
     }
+    nav {
+      margin-bottom: 1em;
+    }
+    nav button {
+      margin-right: 0.5em;
+    }
   </style>
 </head>
 <body>
   <h1>JP Word Lab</h1>
+
+  <!-- 🔼 Навигация -->
+  <nav>
+    <button onclick="showSection('tests')">🧠 Тесты</button>
+    <button onclick="showSection('flashcards')">📚 Карточки</button>
+    <button onclick="showSection('kanji')">漢字 Канзи</button>
+  </nav>
+
+  <!-- 📝 Форма добавления слов -->
   <form id="word-form">
     <input type="text" id="jp-word" placeholder="日本語" required />
     <input type="text" id="en-word" placeholder="English" required />
     <input type="text" id="ru-word" placeholder="Русский" required />
     <button type="submit">Add Word</button>
   </form>
-<!-- Раздел: Тесты -->
-<section id="tests" style="display:none;">
-  <h2>🧠 Тест: Выбери правильный перевод</h2>
-  <div id="quiz-container">Здесь будет тест.</div>
-</section>
 
-<!-- Раздел: Карточки -->
-<section id="flashcards" style="display:none;">
-  <h2>📚 Карточки для запоминания</h2>
-  <div id="flashcards-container">Здесь появятся карточки.</div>
-</section>
+  <!-- 📖 Раздел: Тесты -->
+  <section id="tests" style="display:none;">
+    <h2>🧠 Тест: Выбери правильный перевод</h2>
+    <div id="quiz-container">Здесь будет тест.</div>
+  </section>
 
-<!-- Раздел: Канзи -->
-<section id="kanji" style="display:none;">
-  <h2>漢字 Изучение кандзи</h2>
-  <p>Напиши слово, например "огонь", и мы покажем кандзи, чтение и ассоциации.</p>
-  <input type="text" id="kanji-search" placeholder="Введите ключевое слово..." />
-  <button onclick="searchKanji()">Найти</button>
-  <div id="kanji-results"></div>
-</section>
+  <!-- 📚 Раздел: Карточки -->
+  <section id="flashcards" style="display:none;">
+    <h2>📚 Карточки для запоминания</h2>
+    <div id="flashcards-container">Здесь появятся карточки.</div>
+  </section>
 
+  <!-- 漢字 Раздел: Канзи -->
+  <section id="kanji" style="display:none;">
+    <h2>漢字 Изучение кандзи</h2>
+    <p>Напиши слово, например "огонь", и мы покажем кандзи, чтение и ассоциации.</p>
+    <input type="text" id="kanji-search" placeholder="Введите ключевое слово..." />
+    <button onclick="searchKanji()">Найти</button>
+    <div id="kanji-results"></div>
+  </section>
+
+  <!-- 🗂️ Список слов -->
   <h2>My Words</h2>
   <div id="word-list"></div>
 
+  <!-- 💡 Сценарии -->
   <script>
+    function showSection(sectionId) {
+      ['tests', 'flashcards', 'kanji'].forEach(id => {
+        document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
+      });
+    }
+
+    function searchKanji() {
+      const input = document.getElementById("kanji-search").value.toLowerCase();
+      const results = document.getElementById("kanji-results");
+      results.innerHTML = "";
+
+      const kanjiData = {
+        дерево: { kanji: "木", meaning: "дерево", readings: "モク (moku), き (ki)", hint: "похоже на дерево 🌳" },
+        лес: { kanji: "森", meaning: "лес", readings: "シン (shin), もり (mori)", hint: "три дерева — это лес" },
+        вода: { kanji: "水", meaning: "вода", readings: "スイ (sui), みず (mizu)", hint: "волны воды" },
+        огонь: { kanji: "火", meaning: "огонь", readings: "カ (ka), ひ (hi)", hint: "вспышка огня" }
+      };
+
+      if (kanjiData[input]) {
+        const data = kanjiData[input];
+        results.innerHTML = `
+          <p><strong>${data.kanji}</strong> — ${data.meaning}</p>
+          <p><strong>Чтения:</strong> ${data.readings}</p>
+          <p><strong>Ассоциация:</strong> ${data.hint}</p>
+        `;
+      } else {
+        results.innerHTML = "<p>Кандзи не найден. Попробуйте другое слово.</p>";
+      }
+    }
+
     const form = document.getElementById('word-form');
     const wordList = document.getElementById('word-list');
     let words = JSON.parse(localStorage.getItem('jpWords')) || [];
